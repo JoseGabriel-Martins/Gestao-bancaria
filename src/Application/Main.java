@@ -1,5 +1,7 @@
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+package Application;
+
+import Entities.Conta;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -16,7 +18,7 @@ public class Main {
 
         System.out.println("Criar conta:");
         System.out.println("---------------");
-        System.out.println("Numero da conta: " + numeroConta);
+        System.out.println("Número da conta: " + numeroConta);
         System.out.println("Informe o nome do titular da conta: ");
         String titularConta = sc.nextLine();
 
@@ -35,57 +37,39 @@ public class Main {
             contas.add(contanova);
         }
 
-        /*int totalContas = conta.size(); //Descontinuado por enquanto, possivel uso para contas com permissão//
-        String estatus = (totalContas == 1) ? "Estatus da conta:" : "Estatus das contas:";
-
-        for(Conta informacao: ){
-            System.out.println(estatus);
-            System.out.println(informacao.toString());
-        }   */
-
-        /*while(opcao != 4) {
-            if (contas.size() > 1){
-                System.out.println("Digite o numero da conta:");
-                indice = sc.nextInt();
-            }
-            else{
-                indice = 0;
-            } */
-        //Integer indice = null;
         int opcao = 0;
         Conta contaAtiva = contas.stream().filter(x -> x.getNumeroConta() == numeroConta).findFirst().orElse(null);
 
-        LocalDateTime date = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyy HH:mm");
-
         if (contaAtiva != null) {
             while (opcao != 4) {
-                System.out.println("Escolha uma opção:");
-                System.out.println("1 - Estatus da Conta:");
-                System.out.println("2 - Depositar:");
-                System.out.println("3 - Sacar:");
-                System.out.println("4 - Sair:");
+                System.out.println("\nEscolha uma opção:");
+                System.out.println("1 - Extrato Detalhado");
+                System.out.println("2 - Depositar");
+                System.out.println("3 - Sacar");
+                System.out.println("4 - Sair");
                 opcao = sc.nextInt();
                 switch (opcao) {
                     case 1:
-                        System.out.println(contaAtiva.toString());
+                        System.out.println(contaAtiva.gerarExtrato());
                         break;
                     case 2:
                         System.out.println("Digite o valor a ser depositado: ");
-                        contaAtiva.deposito(sc.nextDouble());
-                        System.out.println("Data/Hora de deposito: " + date.format(formatter));
-                        System.out.printf("Saldo atual: R$%.2f %n", contaAtiva.getSaldo());
+                        double valorDep = sc.nextDouble();
+                        contaAtiva.deposito(valorDep);
+                        System.out.println("Depósito realizado com sucesso!");
+                        System.out.printf("Saldo atual: R$ %.2f %n", contaAtiva.getSaldo());
                         break;
                     case 3:
                         System.out.println("Digite o valor a ser sacado: ");
-                        contaAtiva.saque(sc.nextDouble());
-                        System.out.println("Data/Hora de saque: " + date.format(formatter));
-                        System.out.printf("Saldo atual: R$%.2f %n", contaAtiva.getSaldo());
+                        double valorSaque = sc.nextDouble();
+                        contaAtiva.saque(valorSaque);
+                        System.out.println("Saque realizado com sucesso! (Taxa de R$ 5.00 cobrada)");
+                        System.out.printf("Saldo atual: R$ %.2f %n", contaAtiva.getSaldo());
                         break;
                 }
             }
         } else {
-            System.out.println("Erro critico, conta não encontrada.");
+            System.out.println("Erro crítico: conta não encontrada.");
         }
         System.out.println("Até logo!");
         sc.close();
